@@ -4,18 +4,20 @@ import csv
 passwords=[["Username", "Note", "Password"]]
 
 def initialization():
-    #only works if csv file is already there. add functionality for it to work to create csv file and make it work
     #read csv file and show in window and sync passwords list
-    with  open('localPasswordManagerData.csv', newline='') as file:
-        reader=csv.reader(file, delimiter=' ', quotechar='|')
-        for row in reader:
-            rowList=row[0].split(',')   
-            if rowList != passwords[0]:
-                passwords.append(rowList)
-                labeledPasswordEntry="Username: " + rowList[0] + " | " + "Note: " + rowList[1] + " | " + "Password: " + rowList[2]
-                textOutput.insert(tk.END, labeledPasswordEntry)
-                textOutput.insert(tk.END, "\n")
-    return
+    try:
+        with  open('localPasswordManagerData.csv', newline='') as file:
+            reader=csv.reader(file, delimiter=' ', quotechar='|')
+            for row in reader:
+                rowList=row[0].split(',')   
+                if rowList != passwords[0]:
+                    passwords.append(rowList)
+                    labeledPasswordEntry="Username: " + rowList[0] + " | " + "Note: " + rowList[1] + " | " + "Password: " + rowList[2]
+                    textOutput.insert(tk.END, labeledPasswordEntry)
+                    textOutput.insert(tk.END, "\n")
+        return
+    except:
+        return
 
 def addToPasswordsList():
     item=[userNameVar.get(), notesVar.get(), passwordVar.get()]
