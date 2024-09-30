@@ -1,9 +1,20 @@
 import tkinter as tk
+import csv
 
-passwords=[]
+passwords=[["Username", "Note", "Password"]]
 
 def initialization():
-    #read and decrypt password data from csv file and print to textOutput
+    #only works if csv file is already there. add functionality for it to work to create csv file and make it work
+    #read csv file and show in window and sync passwords list
+    with  open('localPasswordManagerData.csv', newline='') as file:
+        reader=csv.reader(file, delimiter=' ', quotechar='|')
+        for row in reader:
+            rowList=row[0].split(',')   
+            if rowList != passwords[0]:
+                passwords.append(rowList)
+                labeledPasswordEntry="Username: " + rowList[0] + " | " + "Note: " + rowList[1] + " | " + "Password: " + rowList[2]
+                textOutput.insert(tk.END, labeledPasswordEntry)
+                textOutput.insert(tk.END, "\n")
     return
 
 def addToPasswordsList():
@@ -15,10 +26,13 @@ def addToPasswordsList():
     labeledPasswordEntry="Username: " + userNameVar.get() + " | " + "Note: " + notesVar.get() + " | " + "Password: " + passwordVar.get()
     textOutput.insert(tk.END, labeledPasswordEntry)
     textOutput.insert(tk.END, "\n")
-    #add funcitonality to write and encrypt password data to csv file
+
+    #write and encrypt password data to csv file
+    with open('localPasswordManagerData.csv', 'w', newline='') as file:
+        writer=csv.writer(file)
+        writer.writerows(passwords)
 
 def job():
-    print(passwords)
     window.after(2000, job)
 
 
@@ -55,6 +69,8 @@ entryLabelPassword.place(x=550, y=450)
 entryInputPassword.place(x=620, y=450)
 addButton.place(x=830, y=450)
 window.update()
+
+initialization()
 
 window.after(2000, job)
 
