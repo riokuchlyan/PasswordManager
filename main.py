@@ -3,7 +3,7 @@ import random
 import string
 import csv
 
-passwords=[["!Username", "Note", "Password"]]
+passwords=[["!!!Username", "Note", "Password"]]
 
 #read csv file and show in window and sync passwords list
 def initialization():
@@ -14,7 +14,7 @@ def initialization():
             counter=1
             for row in reader:
                 rowList=row[0].split(',')   
-                if rowList != ["!Username", "Note", "Password"]:
+                if rowList != ["!!!Username", "Note", "Password"]:
                     if rowList not in passwords:
                         passwords.append(rowList)
                     labeledPasswordEntry=str(counter) + ") " + "Username: " + rowList[0] + " | " + "Note: " + rowList[1] + " | " + "Password: " + rowList[2]
@@ -30,6 +30,10 @@ def addToPasswordsList():
     for i in passwords:
         if item == i:
             return
+    if userNameVar.get()[0]=="!" or userNameVar.get()[0]<"!":
+        textOutput.delete(1.0, tk.END)
+        textOutput.insert(tk.END, "Can't start username with '!' or ' '.")
+        return
     passwords.append(item)
 
     #write and encrypt password data to csv file
@@ -49,15 +53,16 @@ def search():
     searchItem=searchVar.get()
 
     #searching algorithm
-    for list in passwords:
-        for item in list:
-            if searchItem in item:
-                if item not in addedToSearch:
-                    addedToSearch.append(list)
-                    labeledPasswordEntry=str(counter) + ") " + "Username: " + list[0] + " | " + "Note: " + list[1] + " | " + "Password: " + list[2]
-                    textOutput.insert(tk.END, labeledPasswordEntry)
-                    textOutput.insert(tk.END, "\n")
-                    counter=counter+1
+    if searchVar.get() != "":
+        for list in passwords:
+            for item in list:
+                if searchItem in item:
+                    if item not in addedToSearch:
+                        addedToSearch.append(list)
+                        labeledPasswordEntry=str(counter) + ") " + "Username: " + list[0] + " | " + "Note: " + list[1] + " | " + "Password: " + list[2]
+                        textOutput.insert(tk.END, labeledPasswordEntry)
+                        textOutput.insert(tk.END, "\n")
+                        counter=counter+1
     return
 
 def generateStrongPassword():
@@ -133,5 +138,3 @@ hashing and encrypting given passwords
 search function
 delete inputs
 """
-
-#fix search function and fix bug where adding element with space in front breaks program
