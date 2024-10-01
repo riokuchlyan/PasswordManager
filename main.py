@@ -3,7 +3,7 @@ import random
 import string
 import csv
 
-passwords=[["Username", "Note", "Password"]]
+passwords=[["!Username", "Note", "Password"]]
 
 #read csv file and show in window and sync passwords list
 def initialization():
@@ -14,7 +14,7 @@ def initialization():
             counter=1
             for row in reader:
                 rowList=row[0].split(',')   
-                if rowList != ["Username", "Note", "Password"]:
+                if rowList != ["!Username", "Note", "Password"]:
                     if rowList not in passwords:
                         passwords.append(rowList)
                     labeledPasswordEntry=str(counter) + ") " + "Username: " + rowList[0] + " | " + "Note: " + rowList[1] + " | " + "Password: " + rowList[2]
@@ -35,8 +35,7 @@ def addToPasswordsList():
     #write and encrypt password data to csv file
     with open('localPasswordManagerData.csv', 'w', newline='') as file:
         writer=csv.writer(file)
-        #sorting function also sorts header row
-        #passwords.sort()
+        passwords.sort()
         writer.writerows(passwords)
 
     initialization()
@@ -129,8 +128,10 @@ while True:
     window.update()
 
 """
-functions include:
+functions to include:
 hashing and encrypting given passwords
 search function
 delete inputs
 """
+
+#fix search function and fix bug where adding element with space in front breaks program
