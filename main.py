@@ -152,7 +152,7 @@ except:
 
     with open('login.csv', 'w', newline='') as file:
         writer=csv.writer(file)
-        writer.writerows(setupPasswordVar.get())
+        writer.writerow(setupPasswordVar.get())
 
 #mainGUI
 window=tk.Tk()
