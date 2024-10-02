@@ -3,6 +3,7 @@ import random
 import string
 import csv
 
+#initial passwords list
 passwords=[["!!!Username", "Note", "Password"]]
 
 #read csv file and show in window and sync passwords list
@@ -25,6 +26,7 @@ def initialization():
     except:
         return
 
+#adds entry to passwords list and updates CSV
 def addToPasswordsList():
     item=[userNameVar.get(), notesVar.get(), passwordVar.get()]
     for i in passwords:
@@ -48,6 +50,7 @@ def writeToCSV():
         writer.writerows(passwords)
         return
 
+#searches entries that contain search term
 def search():   
     textOutput.delete(1.0,tk.END)
     textOutput.insert(tk.END, "Search Results: ")
@@ -56,7 +59,6 @@ def search():
     addedToSearch=[]
     searchItem=searchVar.get()
 
-    #searching algorithm
     if searchVar.get() != "":
         for list in passwords:
             for item in list:
@@ -69,6 +71,7 @@ def search():
                         counter=counter+1
     return
 
+#generates random 15 character password and outputs it
 def generateStrongPassword():
     generatePasswordOutput.delete(1.0,tk.END)
     characters = string.ascii_letters + string.digits + string.punctuation
@@ -76,6 +79,7 @@ def generateStrongPassword():
     generatePasswordOutput.insert(tk.END, generatedPassword)
     return
 
+#delete entry from passwords list and update CSV file
 def delete():
     deleteIndex=int(deleteVar.get())
     if deleteIndex != 0:
@@ -87,10 +91,6 @@ def delete():
     initialization()
     return
 
-def job():
-    window.after(2000, job)
-
-
 #GUI
 window=tk.Tk()
 textOutput = tk.Text(window, height = 33, width = 127)
@@ -98,7 +98,6 @@ window.title("Password Manager")
 window.geometry("900x600")
 window.resizable(False, False)
 window.eval('tk::PlaceWindow . center')
-
 
 #variables
 userNameVar=tk.StringVar()
@@ -147,18 +146,9 @@ deleteItemInput.place(x=205, y=550)
 deleteItemButton.place(x=265, y=550)
 window.update()
 
+#start program
 initialization()
 
-window.after(2000, job)
+window.mainloop()
 
-while True:
-    window.update()
-
-
-#currently working on delete function
-
-"""
-functions to include:
-hashing and encrypting given passwords
-delete inputs
-"""
+#function yet to add: master password and encrypting and decrypting passwords in CSV file
