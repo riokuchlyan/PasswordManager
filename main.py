@@ -57,7 +57,7 @@ def search():
         for list in passwords:
             for item in list:
                 if searchItem in item:
-                    if item not in addedToSearch:
+                    if list not in addedToSearch:
                         addedToSearch.append(list)
                         labeledPasswordEntry=str(counter) + ") " + "Username: " + list[0] + " | " + "Note: " + list[1] + " | " + "Password: " + list[2]
                         textOutput.insert(tk.END, labeledPasswordEntry)
