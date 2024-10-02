@@ -36,13 +36,17 @@ def addToPasswordsList():
         return
     passwords.append(item)
 
-    #write and encrypt password data to csv file
+    writeToCSV()
+    initialization()
+    return
+
+#write and encrypt password data to csv file
+def writeToCSV():
     with open('localPasswordManagerData.csv', 'w', newline='') as file:
         writer=csv.writer(file)
         passwords.sort()
         writer.writerows(passwords)
-
-    initialization()
+        return
 
 def search():   
     textOutput.delete(1.0,tk.END)
@@ -72,6 +76,17 @@ def generateStrongPassword():
     generatePasswordOutput.insert(tk.END, generatedPassword)
     return
 
+def delete():
+    deleteIndex=int(deleteVar.get())
+    if deleteIndex != 0:
+        try:
+            passwords.remove(passwords[deleteIndex])
+        except:
+            return
+    writeToCSV()
+    initialization()
+    return
+
 def job():
     window.after(2000, job)
 
@@ -80,7 +95,7 @@ def job():
 window=tk.Tk()
 textOutput = tk.Text(window, height = 33, width = 127)
 window.title("Password Manager")
-window.geometry("900x550")
+window.geometry("900x600")
 window.resizable(False, False)
 window.eval('tk::PlaceWindow . center')
 
@@ -90,6 +105,7 @@ userNameVar=tk.StringVar()
 notesVar=tk.StringVar()
 passwordVar=tk.StringVar()
 searchVar=tk.StringVar()
+deleteVar=tk.StringVar()
 
 #label and buttons
 entryLabelUsername=tk.Label(window, text="Username: ")
@@ -106,6 +122,9 @@ generatePasswordLabel=tk.Label(window, text="Generate Strong Password: ")
 generatePasswordButton=tk.Button(window, text="Generate", command=generateStrongPassword)
 generatePasswordOutput=tk.Text(window, height = 1.5, width = 17)
 showAllButton=tk.Button(window, text="Show All", command=initialization)
+deleteItemLabel=tk.Label(window, text="Enter item number to delete: ")
+deleteItemInput=tk.Entry(window, width=5, textvariable=deleteVar)
+deleteItemButton=tk.Button(window, text="Delete", command=delete)
 
 #place tkinter widgets
 textOutput.place(x=0,y=0)
@@ -123,6 +142,9 @@ generatePasswordLabel.place(x=370, y=500)
 generatePasswordOutput.place(x=545, y=500)
 generatePasswordButton.place(x=680, y=500)
 showAllButton.place(x=800, y=500)
+deleteItemLabel.place(x=20, y=550)
+deleteItemInput.place(x=205, y=550)
+deleteItemButton.place(x=265, y=550)
 window.update()
 
 initialization()
@@ -132,9 +154,11 @@ window.after(2000, job)
 while True:
     window.update()
 
+
+#currently working on delete function
+
 """
 functions to include:
 hashing and encrypting given passwords
-search function
 delete inputs
 """
