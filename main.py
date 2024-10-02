@@ -3,9 +3,6 @@ import random
 import string
 import csv
 
-#initial passwords list
-passwords=[["!!!Username", "Note", "Password"]]
-
 #read csv file and show in window and sync passwords list
 def initialization():
     textOutput.delete(1.0,tk.END)
@@ -100,13 +97,14 @@ window.resizable(False, False)
 window.eval('tk::PlaceWindow . center')
 
 #variables
+passwords=[["!!!Username", "Note", "Password"]]
 userNameVar=tk.StringVar()
 notesVar=tk.StringVar()
 passwordVar=tk.StringVar()
 searchVar=tk.StringVar()
 deleteVar=tk.StringVar()
 
-#label and buttons
+#tkinter widgets
 entryLabelUsername=tk.Label(window, text="Username: ")
 entryInputUsername=tk.Entry(window, textvariable=userNameVar)
 entryLabelNote=tk.Label(window, text="Note: ")
