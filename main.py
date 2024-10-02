@@ -3,6 +3,10 @@ import random
 import string
 import csv
 
+#global variables
+passwords=[["!!!Username", "Note", "Password"]]
+masterPassword=''
+
 #read csv file and show in window and sync passwords list
 def initialization():
     textOutput.delete(1.0,tk.END)
@@ -88,7 +92,69 @@ def delete():
     initialization()
     return
 
-#GUI
+#checks for correct master password
+def checkLogin():
+    if passwordVar.get() != masterPassword[0]:
+        loginWindowOutput.delete(1.0,tk.END)
+        loginWindowOutput.insert(tk.END, "Wrong Password")
+        return
+    loginWindow.destroy()
+    return
+
+#destroy setup window 
+def destroySetupWindow():
+    setupWindow.destroy()
+
+#loginScreen
+try:
+    with open('login.csv', newline='') as file:
+        reader=csv.reader(file, delimiter=' ', quotechar='|')
+        for row in reader:
+            masterPassword=row
+            print(masterPassword)
+    if masterPassword != '':
+        loginWindow=tk.Tk()
+        loginWindow.title("Login")
+        loginWindow.geometry("310x200")
+        loginWindow.resizable(False, False)
+        loginWindow.eval('tk::PlaceWindow . center')
+
+        passwordVar=tk.StringVar()
+        askPasswordLabel=tk.Label(loginWindow, text="Enter Password: ")
+        askPasswordInput=tk.Entry(loginWindow, width=10, textvariable=passwordVar)
+        askPasswordButton=tk.Button(loginWindow, text="Login", command=checkLogin)
+        loginWindowOutput=tk.Text(loginWindow, height=2, width=15)
+
+        askPasswordLabel.place(x=10,y=80)
+        askPasswordInput.place(x=120, y=80)
+        askPasswordButton.place(x=230, y=80)
+        loginWindowOutput.place(x=100,y=120)
+
+        loginWindow.mainloop()
+ 
+except:
+    setupWindow=tk.Tk()
+    setupWindow.title("Setup Master Password")
+    setupWindow.geometry("310x200")
+    setupWindow.resizable(False, False)
+    setupWindow.eval('tk::PlaceWindow . center')
+
+    setupPasswordVar=tk.StringVar()
+    setupPasswordLabel=tk.Label(setupWindow, text="Create your master password. \n This can not be recovered if forgotten.")
+    setupPasswordInput=tk.Entry(setupWindow, width=10, textvariable=setupPasswordVar)
+    setupPasswordButton=tk.Button(setupWindow, text="Enter", command=destroySetupWindow)
+
+    setupPasswordLabel.place(x=30, y=50)
+    setupPasswordInput.place(x=105,y=100)
+    setupPasswordButton.place(x=120, y=150)
+
+    setupWindow.mainloop()
+
+    with open('login.csv', 'w', newline='') as file:
+        writer=csv.writer(file)
+        writer.writerows(setupPasswordVar.get())
+
+#mainGUI
 window=tk.Tk()
 textOutput = tk.Text(window, height = 33, width = 127)
 window.title("Password Manager")
@@ -97,7 +163,6 @@ window.resizable(False, False)
 window.eval('tk::PlaceWindow . center')
 
 #variables
-passwords=[["!!!Username", "Note", "Password"]]
 userNameVar=tk.StringVar()
 notesVar=tk.StringVar()
 passwordVar=tk.StringVar()
@@ -149,4 +214,4 @@ initialization()
 
 window.mainloop()
 
-#function yet to add: master password and encrypting and decrypting passwords in CSV file
+#function yet to add: encrypting and decrypting master password and passwords in CSV files
