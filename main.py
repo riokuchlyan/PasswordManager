@@ -106,7 +106,6 @@ def destroySetupWindow():
     setupWindow.destroy()
 
 #creates help window
-
 def getHelp():
     def destroyHelpWindow():
         helpWindow.destroy()
@@ -121,8 +120,6 @@ def getHelp():
     helpWindowReturnButton.place(x=115, y=120)
     helpWindow.mainloop()
     return
-
-
 
 #loginScreen
 try:
