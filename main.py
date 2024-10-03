@@ -106,8 +106,23 @@ def destroySetupWindow():
     setupWindow.destroy()
 
 #creates help window
+
 def getHelp():
+    def destroyHelpWindow():
+        helpWindow.destroy()
+    helpWindow=tk.Tk()
+    helpWindow.title("Help")
+    helpWindow.geometry("310x200")
+    helpWindow.resizable(False, False)
+    helpWindow.eval('tk::PlaceWindow . center')
+    helpWindowLabel=tk.Label(helpWindow, text="To reset the password, find 'login.csv' and \n 'localPasswordManager.csv' in your file explorer \n and delete their contents.")
+    helpWindowLabel.place(x=0,y=40)
+    helpWindowReturnButton=tk.Button(helpWindow, text="Return", command=destroyHelpWindow)
+    helpWindowReturnButton.place(x=115, y=120)
+    helpWindow.mainloop()
     return
+
+
 
 #loginScreen
 try:
@@ -221,4 +236,3 @@ window.mainloop()
 
 #function yet to add: 
     #encrypting and decrypting master password and passwords in CSV files
-    #add reset functionality that resets master password and clears csv file
