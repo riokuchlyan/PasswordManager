@@ -105,14 +105,18 @@ def checkLogin():
 def destroySetupWindow():
     setupWindow.destroy()
 
+#creates help window
+def getHelp():
+    return
+
 #loginScreen
 try:
     with open('login.csv', newline='') as file:
         reader=csv.reader(file, delimiter=' ', quotechar='|')
         for row in reader:
             masterPassword=row
-            print(masterPassword)
-    if masterPassword != '':
+
+    if masterPassword[0] != '':
         loginWindow=tk.Tk()
         loginWindow.title("Login")
         loginWindow.geometry("310x200")
@@ -144,15 +148,14 @@ except:
     setupPasswordInput=tk.Entry(setupWindow, width=10, textvariable=setupPasswordVar)
     setupPasswordButton=tk.Button(setupWindow, text="Enter", command=destroySetupWindow)
 
-    setupPasswordLabel.place(x=30, y=50)
+    setupPasswordLabel.place(x=35, y=55)
     setupPasswordInput.place(x=105,y=100)
     setupPasswordButton.place(x=120, y=150)
 
     setupWindow.mainloop()
 
-    with open('login.csv', 'w', newline='') as file:
-        writer=csv.writer(file)
-        writer.writerow(setupPasswordVar.get())
+    with open('login.csv', 'w') as file:
+        file.write(setupPasswordVar.get())
 
 #mainGUI
 window=tk.Tk()
@@ -187,6 +190,7 @@ showAllButton=tk.Button(window, text="Show All", command=initialization)
 deleteItemLabel=tk.Label(window, text="Enter item number to delete: ")
 deleteItemInput=tk.Entry(window, width=5, textvariable=deleteVar)
 deleteItemButton=tk.Button(window, text="Delete", command=delete)
+helpButton=tk.Button(window, text="Help", command=getHelp)
 
 #place tkinter widgets
 textOutput.place(x=0,y=0)
@@ -207,6 +211,7 @@ showAllButton.place(x=800, y=500)
 deleteItemLabel.place(x=20, y=550)
 deleteItemInput.place(x=205, y=550)
 deleteItemButton.place(x=265, y=550)
+helpButton.place(x=370, y=550)
 window.update()
 
 #start program
@@ -214,4 +219,6 @@ initialization()
 
 window.mainloop()
 
-#function yet to add: encrypting and decrypting master password and passwords in CSV files
+#function yet to add: 
+    #encrypting and decrypting master password and passwords in CSV files
+    #add reset functionality that resets master password and clears csv file
