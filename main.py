@@ -2,6 +2,8 @@ import tkinter as tk
 import random
 import string
 import csv
+from cryptography.fernet import Fernet
+import base64
 
 #global variables
 passwords=[["!!!Username", "Note", "Password"]]
@@ -94,7 +96,12 @@ def delete():
 
 #checks for correct master password
 def checkLogin():
-    if passwordVar.get() != masterPassword[0]:
+    with open('key.txt', 'rb') as file:
+        #get key for decryption
+        key=file.read()
+        fernet=Fernet(key)
+        decryptedMasterPassword=fernet.decrypt(masterPasswordEncrypted).decode()
+    if passwordVar.get() != decryptedMasterPassword:
         loginWindowOutput.delete(1.0,tk.END)
         loginWindowOutput.insert(tk.END, "Wrong Password")
         return
@@ -114,7 +121,7 @@ def getHelp():
     helpWindow.geometry("310x200")
     helpWindow.resizable(False, False)
     helpWindow.eval('tk::PlaceWindow . center')
-    helpWindowLabel=tk.Label(helpWindow, text="To reset the password, find 'login.csv' and \n 'localPasswordManager.csv' in your file explorer \n and delete their contents.")
+    helpWindowLabel=tk.Label(helpWindow, text="To reset the password, find 'masterPassword.csv' and \n 'localPasswordManager.csv' in your file explorer \n and delete them.")
     helpWindowLabel.place(x=0,y=40)
     helpWindowReturnButton=tk.Button(helpWindow, text="Return", command=destroyHelpWindow)
     helpWindowReturnButton.place(x=115, y=120)
@@ -123,12 +130,11 @@ def getHelp():
 
 #loginScreen
 try:
-    with open('login.csv', newline='') as file:
-        reader=csv.reader(file, delimiter=' ', quotechar='|')
-        for row in reader:
-            masterPassword=row
+    reader = open('masterPassword.txt', 'rb')
+    masterPasswordEncrypted=reader.read()
+    reader.close()
 
-    if masterPassword[0] != '':
+    if masterPasswordEncrypted != '':
         loginWindow=tk.Tk()
         loginWindow.title("Login")
         loginWindow.geometry("310x200")
@@ -166,8 +172,16 @@ except:
 
     setupWindow.mainloop()
 
-    with open('login.csv', 'w') as file:
-        file.write(setupPasswordVar.get())
+    with open('masterPassword.txt', 'wb') as file:
+        #encrypt and write masterpassword to txt file
+        unencryptedMasterPassword=setupPasswordVar.get()
+        unencryptedMasterPasswordBytes=unencryptedMasterPassword.encode("utf-8")
+        key=base64.urlsafe_b64encode(unencryptedMasterPasswordBytes.ljust(32)[:32])
+        with open('key.txt', 'wb') as fileTwo:
+            fileTwo.write(key)
+        fernet=Fernet(key)
+        encryptedMasterPassword=fernet.encrypt(unencryptedMasterPassword.encode())
+        file.write(encryptedMasterPassword)
 
 #mainGUI
 window=tk.Tk()
