@@ -51,7 +51,8 @@ def writeToCSV():
         writer=csv.writer(file)
         passwords.sort()
         writer.writerows(passwords)
-        return
+
+    return
 
 #searches entries that contain search term
 def search():   
@@ -96,7 +97,7 @@ def delete():
 
 #checks for correct master password
 def checkLogin():
-    with open('key.txt', 'rb') as file:
+    with open('masterPasswordKey.txt', 'rb') as file:
         #get key for decryption
         key=file.read()
         fernet=Fernet(key)
@@ -177,7 +178,7 @@ except:
         unencryptedMasterPassword=setupPasswordVar.get()
         unencryptedMasterPasswordBytes=unencryptedMasterPassword.encode("utf-8")
         key=base64.urlsafe_b64encode(unencryptedMasterPasswordBytes.ljust(32)[:32])
-        with open('key.txt', 'wb') as fileTwo:
+        with open('masterPasswordKey.txt', 'wb') as fileTwo:
             fileTwo.write(key)
         fernet=Fernet(key)
         encryptedMasterPassword=fernet.encrypt(unencryptedMasterPassword.encode())
@@ -247,3 +248,4 @@ window.mainloop()
 
 #function yet to add: 
     #encrypting and decrypting master password and passwords in CSV files
+        #https://www.geeksforgeeks.org/encrypt-and-decrypt-files-using-python/
