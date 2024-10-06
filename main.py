@@ -249,3 +249,4 @@ window.mainloop()
 #function yet to add: 
     #encrypting and decrypting master password and passwords in CSV files
         #https://www.geeksforgeeks.org/encrypt-and-decrypt-files-using-python/
+        #similar to how masterpassword was encrypted, create file to store key for csv file then add funciton to encrypt and decrypt the whole file
