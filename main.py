@@ -12,23 +12,22 @@ masterPassword=''
 #read csv file and show in window and sync passwords list
 def initialization():
     textOutput.delete(1.0,tk.END)
-
     try:
-        with open('dataKey.key', 'rb') as fileTwo:
-            key = fileTwo.read()
+        with open('dataKey.key', 'rb') as dataKey:
+            key = dataKey.read()
         #initalize key
         fernet=Fernet(key)
         #open encrypted file
-        with open('localPasswordManagerData.csv', 'rb') as fileThree:
-            encryptedData=fileThree.read()
+        with open('data.csv', 'rb') as encryptedFile:
+            encryptedData=encryptedFile.read()
         #decrypt data
         decryptedData=fernet.decrypt(encryptedData)
         #writing unencrypted data
-        with open('localPasswordManagerData.csv', 'wb') as fileFour:
-            fileFour.write(decryptedData)
-
-        with  open('localPasswordManagerData.csv', newline='') as file:
-            reader=csv.reader(file, delimiter=' ', quotechar='|')
+        with open('data.csv', 'wb') as encryptedFileTwo:
+            encryptedFileTwo.write(decryptedData)
+        #output decrypted passwords to GUI
+        with  open('data.csv', newline='') as decryptedFile:
+            reader=csv.reader(decryptedFile, delimiter=' ', quotechar='|')
             counter=1
             for row in reader:
                 rowList=row[0].split(',')   
@@ -40,19 +39,56 @@ def initialization():
                     textOutput.insert(tk.END, "\n")
                     counter=counter+1
         #encrypt data again
-        with open('dataKey.key', 'rb') as fileTwo:
-            key = fileTwo.read()
+        with open('dataKey.key', 'rb') as dataKeyTwo:
+            key = dataKeyTwo.read()
         #initalize key
         fernet=Fernet(key)
         #open unencrypted file
-        with open('localPasswordManagerData.csv', 'rb') as fileThree:
-            unencryptedData=fileThree.read()
+        with open('data.csv', 'rb') as unencryptedFile:
+            unencryptedData=unencryptedFile.read()
         #encrypted data
         encryptedData=fernet.encrypt(unencryptedData)
         #writing encrypted data
-        with open('localPasswordManagerData.csv', 'wb') as fileFour:
-            fileFour.write(encryptedData)
+        with open('data.csv', 'wb') as unencryptedFileTwo:
+            unencryptedFileTwo.write(encryptedData)
         return
+    except:
+        return
+
+#exports csv
+def export():
+    try:
+        with open('dataKey.key', 'rb') as dataKey:
+            key = dataKey.read()
+        #initalize key
+        fernet=Fernet(key)
+        #open encrypted file
+        with open('data.csv', 'rb') as encryptedFile:
+            encryptedData=encryptedFile.read()
+        #decrypt data
+        decryptedData=fernet.decrypt(encryptedData)
+        #writing unencrypted data
+        with open('data.csv', 'wb') as encryptedFileTwo:
+            encryptedFileTwo.write(decryptedData)
+        with open('exportedPasswords.csv' , 'wb') as exportedFile:
+            exportedFile.write(decryptedData)
+        #encrypt data again
+        with open('dataKey.key', 'rb') as dataKeyTwo:
+            key = dataKeyTwo.read()
+        #initalize key
+        fernet=Fernet(key)
+        #open unencrypted file
+        with open('data.csv', 'rb') as unencryptedFile:
+            unencryptedData=unencryptedFile.read()
+        #encrypted data
+        encryptedData=fernet.encrypt(unencryptedData)
+        #writing encrypted data
+        with open('data.csv', 'wb') as unencryptedFileTwo:
+            unencryptedFileTwo.write(encryptedData)
+        #output export
+        textOutput.delete(1.0,tk.END)
+        textOutput.insert(tk.END, "Exported.")
+        return        
     except:
         return
 
@@ -67,38 +103,36 @@ def addToPasswordsList():
         textOutput.insert(tk.END, "Can't start username with '!' or ' '.")
         return
     passwords.append(item)
-
     writeToCSV()
     initialization()
     return
 
 #write and encrypt password data to csv file
 def writeToCSV():
-    with open('localPasswordManagerData.csv', 'w', newline='') as file:
-        writer=csv.writer(file)
+    with open('data.csv', 'w', newline='') as data:
+        writer=csv.writer(data)
         passwords.sort()
         writer.writerows(passwords)
-    
     #open key file
     try:
-        with open('dataKey.key', 'rb') as fileTwo:
-            key = fileTwo.read()
+        with open('dataKey.key', 'rb') as dataKey:
+            key = dataKey.read()
         #initalize key
         fernet=Fernet(key)
         #open unencrypted file
-        with open('localPasswordManagerData.csv', 'rb') as fileThree:
-            unencryptedData=fileThree.read()
+        with open('data.csv', 'rb') as dataTwo:
+            unencryptedData=dataTwo.read()
         #encrypted data
         encryptedData=fernet.encrypt(unencryptedData)
         #writing encrypted data
-        with open('localPasswordManagerData.csv', 'wb') as fileFour:
-            fileFour.write(encryptedData)
+        with open('data.csv', 'wb') as dataThree:
+            dataThree.write(encryptedData)
     except:
+        #creates dataKey file and reruns function
         key=Fernet.generate_key()
-        with open('dataKey.key', 'wb') as file:
-            file.write(key)
+        with open('dataKey.key', 'wb') as dataKey:
+            dataKey.write(key)
         writeToCSV()
-   
     return
 
 #searches entries that contain search term
@@ -109,7 +143,7 @@ def search():
     counter=1
     addedToSearch=[]
     searchItem=searchVar.get()
-
+    #search algorithm
     if searchVar.get() != "":
         for list in passwords:
             for item in list:
@@ -144,9 +178,9 @@ def delete():
 
 #checks for correct master password
 def checkLogin():
-    with open('masterPasswordKey.key', 'rb') as file:
+    with open('masterPasswordKey.key', 'rb') as masterPasswordKey:
         #get key for decryption
-        key=file.read()
+        key=masterPasswordKey.read()
         fernet=Fernet(key)
         decryptedMasterPassword=fernet.decrypt(masterPasswordEncrypted).decode()
     if passwordVar.get() != decryptedMasterPassword:
@@ -169,37 +203,34 @@ def getHelp():
     helpWindow.geometry("310x200")
     helpWindow.resizable(False, False)
     helpWindow.eval('tk::PlaceWindow . center')
-    helpWindowLabel=tk.Label(helpWindow, text="To reset the password, find 'masterPassword.csv' and \n 'localPasswordManager.csv' in your file explorer \n and delete them.")
-    helpWindowLabel.place(x=0,y=40)
+    helpWindowLabel=tk.Label(helpWindow, text="To reset the password, delete all data files. \n This will erase all data and reset the program.")
+    helpWindowLabel.place(x=6,y=40)
     helpWindowReturnButton=tk.Button(helpWindow, text="Return", command=destroyHelpWindow)
     helpWindowReturnButton.place(x=115, y=120)
     helpWindow.mainloop()
     return
 
+#initial code starts here
 #loginScreen
 try:
     reader = open('masterPassword.key', 'rb')
     masterPasswordEncrypted=reader.read()
     reader.close()
-
     if masterPasswordEncrypted != '':
         loginWindow=tk.Tk()
         loginWindow.title("Login")
         loginWindow.geometry("310x200")
         loginWindow.resizable(False, False)
         loginWindow.eval('tk::PlaceWindow . center')
-
         passwordVar=tk.StringVar()
         askPasswordLabel=tk.Label(loginWindow, text="Enter Password: ")
         askPasswordInput=tk.Entry(loginWindow, width=10, textvariable=passwordVar)
         askPasswordButton=tk.Button(loginWindow, text="Login", command=checkLogin)
         loginWindowOutput=tk.Text(loginWindow, height=2, width=15)
-
         askPasswordLabel.place(x=10,y=80)
         askPasswordInput.place(x=120, y=80)
         askPasswordButton.place(x=230, y=80)
         loginWindowOutput.place(x=100,y=120)
-
         loginWindow.mainloop()
  
 except:
@@ -208,18 +239,14 @@ except:
     setupWindow.geometry("310x200")
     setupWindow.resizable(False, False)
     setupWindow.eval('tk::PlaceWindow . center')
-
     setupPasswordVar=tk.StringVar()
     setupPasswordLabel=tk.Label(setupWindow, text="Create your master password. \n This can not be recovered if forgotten.")
     setupPasswordInput=tk.Entry(setupWindow, width=10, textvariable=setupPasswordVar)
     setupPasswordButton=tk.Button(setupWindow, text="Enter", command=destroySetupWindow)
-
     setupPasswordLabel.place(x=35, y=55)
     setupPasswordInput.place(x=105,y=100)
     setupPasswordButton.place(x=120, y=150)
-
     setupWindow.mainloop()
-
     with open('masterPassword.key', 'wb') as file:
         #encrypt and write masterpassword to txt file
         unencryptedMasterPassword=setupPasswordVar.get()
@@ -260,11 +287,12 @@ searchButton=tk.Button(window, text="Search", command=search)
 generatePasswordLabel=tk.Label(window, text="Generate Strong Password: ")
 generatePasswordButton=tk.Button(window, text="Generate", command=generateStrongPassword)
 generatePasswordOutput=tk.Text(window, height = 1.5, width = 17)
-showAllButton=tk.Button(window, text="Show All", command=initialization)
+showAllButton=tk.Button(window, text="Return", command=initialization)
 deleteItemLabel=tk.Label(window, text="Enter item number to delete: ")
 deleteItemInput=tk.Entry(window, width=5, textvariable=deleteVar)
 deleteItemButton=tk.Button(window, text="Delete", command=delete)
 helpButton=tk.Button(window, text="Help", command=getHelp)
+exportButton=tk.Button(window, text="Export", command=export)
 
 #place tkinter widgets
 textOutput.place(x=0,y=0)
@@ -286,13 +314,14 @@ deleteItemLabel.place(x=20, y=550)
 deleteItemInput.place(x=205, y=550)
 deleteItemButton.place(x=265, y=550)
 helpButton.place(x=370, y=550)
+exportButton.place(x=460, y=550)
 window.update()
 
-#start program
+#starts main GUI and initializaiton 
 initialization()
-
 window.mainloop()
 
 #things to do
-    #clean up program
-    #make comments clearer
+    #make files in specific directory
+    #make reset function automatically delete files
+    #write help window writing
