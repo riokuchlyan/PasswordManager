@@ -12,7 +12,21 @@ masterPassword=''
 #read csv file and show in window and sync passwords list
 def initialization():
     textOutput.delete(1.0,tk.END)
+
     try:
+        with open('dataKey.key', 'rb') as fileTwo:
+            key = fileTwo.read()
+        #initalize key
+        fernet=Fernet(key)
+        #open encrypted file
+        with open('localPasswordManagerData.csv', 'rb') as fileThree:
+            encryptedData=fileThree.read()
+        #decrypt data
+        decryptedData=fernet.decrypt(encryptedData)
+        #writing unencrypted data
+        with open('localPasswordManagerData.csv', 'wb') as fileFour:
+            fileFour.write(decryptedData)
+
         with  open('localPasswordManagerData.csv', newline='') as file:
             reader=csv.reader(file, delimiter=' ', quotechar='|')
             counter=1
@@ -25,6 +39,19 @@ def initialization():
                     textOutput.insert(tk.END, labeledPasswordEntry)
                     textOutput.insert(tk.END, "\n")
                     counter=counter+1
+        #encrypt data again
+        with open('dataKey.key', 'rb') as fileTwo:
+            key = fileTwo.read()
+        #initalize key
+        fernet=Fernet(key)
+        #open unencrypted file
+        with open('localPasswordManagerData.csv', 'rb') as fileThree:
+            unencryptedData=fileThree.read()
+        #encrypted data
+        encryptedData=fernet.encrypt(unencryptedData)
+        #writing encrypted data
+        with open('localPasswordManagerData.csv', 'wb') as fileFour:
+            fileFour.write(encryptedData)
         return
     except:
         return
@@ -51,7 +78,27 @@ def writeToCSV():
         writer=csv.writer(file)
         passwords.sort()
         writer.writerows(passwords)
-
+    
+    #open key file
+    try:
+        with open('dataKey.key', 'rb') as fileTwo:
+            key = fileTwo.read()
+        #initalize key
+        fernet=Fernet(key)
+        #open unencrypted file
+        with open('localPasswordManagerData.csv', 'rb') as fileThree:
+            unencryptedData=fileThree.read()
+        #encrypted data
+        encryptedData=fernet.encrypt(unencryptedData)
+        #writing encrypted data
+        with open('localPasswordManagerData.csv', 'wb') as fileFour:
+            fileFour.write(encryptedData)
+    except:
+        key=Fernet.generate_key()
+        with open('dataKey.key', 'wb') as file:
+            file.write(key)
+        writeToCSV()
+   
     return
 
 #searches entries that contain search term
@@ -97,7 +144,7 @@ def delete():
 
 #checks for correct master password
 def checkLogin():
-    with open('masterPasswordKey.txt', 'rb') as file:
+    with open('masterPasswordKey.key', 'rb') as file:
         #get key for decryption
         key=file.read()
         fernet=Fernet(key)
@@ -131,7 +178,7 @@ def getHelp():
 
 #loginScreen
 try:
-    reader = open('masterPassword.txt', 'rb')
+    reader = open('masterPassword.key', 'rb')
     masterPasswordEncrypted=reader.read()
     reader.close()
 
@@ -173,12 +220,12 @@ except:
 
     setupWindow.mainloop()
 
-    with open('masterPassword.txt', 'wb') as file:
+    with open('masterPassword.key', 'wb') as file:
         #encrypt and write masterpassword to txt file
         unencryptedMasterPassword=setupPasswordVar.get()
         unencryptedMasterPasswordBytes=unencryptedMasterPassword.encode("utf-8")
         key=base64.urlsafe_b64encode(unencryptedMasterPasswordBytes.ljust(32)[:32])
-        with open('masterPasswordKey.txt', 'wb') as fileTwo:
+        with open('masterPasswordKey.key', 'wb') as fileTwo:
             fileTwo.write(key)
         fernet=Fernet(key)
         encryptedMasterPassword=fernet.encrypt(unencryptedMasterPassword.encode())
@@ -246,7 +293,6 @@ initialization()
 
 window.mainloop()
 
-#function yet to add: 
-    #encrypting and decrypting master password and passwords in CSV files
-        #https://www.geeksforgeeks.org/encrypt-and-decrypt-files-using-python/
-        #similar to how masterpassword was encrypted, create file to store key for csv file then add funciton to encrypt and decrypt the whole file
+#things to do
+    #clean up program
+    #make comments clearer
