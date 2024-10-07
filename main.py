@@ -320,8 +320,3 @@ window.update()
 #starts main GUI and initializaiton 
 initialization()
 window.mainloop()
-
-#things to do
-    #make files in specific directory
-    #make reset function automatically delete files
-    #write help window writing
