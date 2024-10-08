@@ -4,29 +4,36 @@ import string
 import csv
 from cryptography.fernet import Fernet
 import base64
+import os
 
 #global variables
 passwords=[["!!!Username", "Note", "Password"]]
 masterPassword=''
 
+#create directories for data
+absolute_path = os.path.dirname(__file__)
+relative_path="password_manager_data"
+working_path=os.path.join(absolute_path, relative_path)
+os.makedirs(working_path)
+
 #read csv file and show in window and sync passwords list
 def initialization():
     textOutput.delete(1.0,tk.END)
     try:
-        with open('dataKey.key', 'rb') as dataKey:
+        with open(os.path.join(working_path,"dataKey.key"), 'rb') as dataKey:
             key = dataKey.read()
         #initalize key
         fernet=Fernet(key)
         #open encrypted file
-        with open('data.csv', 'rb') as encryptedFile:
+        with open(os.path.join(working_path,"data.csv"), 'rb') as encryptedFile:
             encryptedData=encryptedFile.read()
         #decrypt data
         decryptedData=fernet.decrypt(encryptedData)
         #writing unencrypted data
-        with open('data.csv', 'wb') as encryptedFileTwo:
+        with open(os.path.join(working_path,"data.csv"), 'wb') as encryptedFileTwo:
             encryptedFileTwo.write(decryptedData)
         #output decrypted passwords to GUI
-        with  open('data.csv', newline='') as decryptedFile:
+        with  open(os.path.join(working_path,"data.csv"), newline='') as decryptedFile:
             reader=csv.reader(decryptedFile, delimiter=' ', quotechar='|')
             counter=1
             for row in reader:
@@ -39,17 +46,17 @@ def initialization():
                     textOutput.insert(tk.END, "\n")
                     counter=counter+1
         #encrypt data again
-        with open('dataKey.key', 'rb') as dataKeyTwo:
+        with open(os.path.join(working_path,"dataKey.key"), 'rb') as dataKeyTwo:
             key = dataKeyTwo.read()
         #initalize key
         fernet=Fernet(key)
         #open unencrypted file
-        with open('data.csv', 'rb') as unencryptedFile:
+        with open(os.path.join(working_path,"data.csv"), 'rb') as unencryptedFile:
             unencryptedData=unencryptedFile.read()
         #encrypted data
         encryptedData=fernet.encrypt(unencryptedData)
         #writing encrypted data
-        with open('data.csv', 'wb') as unencryptedFileTwo:
+        with open(os.path.join(working_path,"data.csv"), 'wb') as unencryptedFileTwo:
             unencryptedFileTwo.write(encryptedData)
         return
     except:
@@ -58,32 +65,32 @@ def initialization():
 #exports csv
 def export():
     try:
-        with open('dataKey.key', 'rb') as dataKey:
+        with open(os.path.join(working_path,"dataKey.key"), 'rb') as dataKey:
             key = dataKey.read()
         #initalize key
         fernet=Fernet(key)
         #open encrypted file
-        with open('data.csv', 'rb') as encryptedFile:
+        with open(os.path.join(working_path,"data.csv"), 'rb') as encryptedFile:
             encryptedData=encryptedFile.read()
         #decrypt data
         decryptedData=fernet.decrypt(encryptedData)
         #writing unencrypted data
-        with open('data.csv', 'wb') as encryptedFileTwo:
+        with open(os.path.join(working_path,"data.csv"), 'wb') as encryptedFileTwo:
             encryptedFileTwo.write(decryptedData)
-        with open('exportedPasswords.csv' , 'wb') as exportedFile:
+        with open(os.path.join(working_path,"exportedPasswords.csv") , 'wb') as exportedFile:
             exportedFile.write(decryptedData)
         #encrypt data again
-        with open('dataKey.key', 'rb') as dataKeyTwo:
+        with open(os.path.join(working_path,"dataKey.key"), 'rb') as dataKeyTwo:
             key = dataKeyTwo.read()
         #initalize key
         fernet=Fernet(key)
         #open unencrypted file
-        with open('data.csv', 'rb') as unencryptedFile:
+        with open(os.path.join(working_path,"data.csv"), 'rb') as unencryptedFile:
             unencryptedData=unencryptedFile.read()
         #encrypted data
         encryptedData=fernet.encrypt(unencryptedData)
         #writing encrypted data
-        with open('data.csv', 'wb') as unencryptedFileTwo:
+        with open(os.path.join(working_path,"data.csv"), 'wb') as unencryptedFileTwo:
             unencryptedFileTwo.write(encryptedData)
         #output export
         textOutput.delete(1.0,tk.END)
@@ -109,28 +116,28 @@ def addToPasswordsList():
 
 #write and encrypt password data to csv file
 def writeToCSV():
-    with open('data.csv', 'w', newline='') as data:
+    with open(os.path.join(working_path,"data.csv"), 'w', newline='') as data:
         writer=csv.writer(data)
         passwords.sort()
         writer.writerows(passwords)
     #open key file
     try:
-        with open('dataKey.key', 'rb') as dataKey:
+        with open(os.path.join(working_path,"dataKey.key"), 'rb') as dataKey:
             key = dataKey.read()
         #initalize key
         fernet=Fernet(key)
         #open unencrypted file
-        with open('data.csv', 'rb') as dataTwo:
+        with open(os.path.join(working_path,"data.csv"), 'rb') as dataTwo:
             unencryptedData=dataTwo.read()
         #encrypted data
         encryptedData=fernet.encrypt(unencryptedData)
         #writing encrypted data
-        with open('data.csv', 'wb') as dataThree:
+        with open(os.path.join(working_path,"data.csv"), 'wb') as dataThree:
             dataThree.write(encryptedData)
     except:
         #creates dataKey file and reruns function
         key=Fernet.generate_key()
-        with open('dataKey.key', 'wb') as dataKey:
+        with open(os.path.join(working_path,"dataKey.key"), 'wb') as dataKey:
             dataKey.write(key)
         writeToCSV()
     return
@@ -178,7 +185,7 @@ def delete():
 
 #checks for correct master password
 def checkLogin():
-    with open('masterPasswordKey.key', 'rb') as masterPasswordKey:
+    with open(os.path.join(working_path,"masterPasswordKey.key"), 'rb') as masterPasswordKey:
         #get key for decryption
         key=masterPasswordKey.read()
         fernet=Fernet(key)
@@ -213,7 +220,7 @@ def getHelp():
 #initial code starts here
 #loginScreen
 try:
-    reader = open('masterPassword.key', 'rb')
+    reader = open(os.path.join(working_path,"masterPassword.key"), 'rb')
     masterPasswordEncrypted=reader.read()
     reader.close()
     if masterPasswordEncrypted != '':
@@ -247,12 +254,12 @@ except:
     setupPasswordInput.place(x=105,y=100)
     setupPasswordButton.place(x=120, y=150)
     setupWindow.mainloop()
-    with open('masterPassword.key', 'wb') as file:
+    with open(os.path.join(working_path,"masterPassword.key"), 'wb') as file:
         #encrypt and write masterpassword to txt file
         unencryptedMasterPassword=setupPasswordVar.get()
         unencryptedMasterPasswordBytes=unencryptedMasterPassword.encode("utf-8")
         key=base64.urlsafe_b64encode(unencryptedMasterPasswordBytes.ljust(32)[:32])
-        with open('masterPasswordKey.key', 'wb') as fileTwo:
+        with open(os.path.join(working_path,"masterPasswordKey.key"), 'wb') as fileTwo:
             fileTwo.write(key)
         fernet=Fernet(key)
         encryptedMasterPassword=fernet.encrypt(unencryptedMasterPassword.encode())
@@ -320,3 +327,6 @@ window.update()
 #starts main GUI and initializaiton 
 initialization()
 window.mainloop()
+
+#remove help section and change to reset section in login screen
+#resize main window to perfectly fit buttons
