@@ -14,7 +14,10 @@ masterPassword=''
 absolute_path = os.path.dirname(__file__)
 relative_path="password_manager_data"
 working_path=os.path.join(absolute_path, relative_path)
-os.makedirs(working_path)
+try:
+    os.makedirs(working_path)
+except:
+    pass
 
 #read csv file and show in window and sync passwords list
 def initialization():
@@ -210,12 +213,46 @@ def getHelp():
     helpWindow.geometry("310x200")
     helpWindow.resizable(False, False)
     helpWindow.eval('tk::PlaceWindow . center')
-    helpWindowLabel=tk.Label(helpWindow, text="To reset the password, delete all data files. \n This will erase all data and reset the program.")
-    helpWindowLabel.place(x=6,y=40)
+    helpWindowLabel=tk.Label(helpWindow, text="To reset the password, click reset on the\nlogin screen. This will erase all data \n and reset the program.")
+    helpWindowLabel.place(x=25,y=40)
     helpWindowReturnButton=tk.Button(helpWindow, text="Return", command=destroyHelpWindow)
     helpWindowReturnButton.place(x=115, y=120)
     helpWindow.mainloop()
     return
+
+#overwrites all files to blank
+def deleteAllData():
+    try:
+        with open(os.path.join(working_path,"data.csv"), 'wb') as dataFile:
+            dataFile.write(b'')
+        with open(os.path.join(working_path,"dataKey.key"), 'wb') as dataKeyFile:
+            dataKeyFile.write(b'')
+        with open(os.path.join(working_path,"masterPasswordKey.key"), 'wb') as masterPasswordKeyFile:
+            masterPasswordKeyFile.write(b'')
+        with open(os.path.join(working_path,"masterPassword.key"), 'wb') as masterPasswordFile:
+            masterPasswordFile.write(b'')
+        loginWindow.destroy()
+        os._exit
+        quit()
+    except:
+        pass
+
+#reset password
+def reset():
+    def destroyResetWindow():
+        resetWindow.destroy()
+    resetWindow=tk.Tk()
+    resetWindow.title("Reset")
+    resetWindow.geometry("310x200")
+    resetWindow.resizable(False, False)
+    resetWindow.eval('tk::PlaceWindow . center')
+    resetWindowLabel=tk.Label(resetWindow, text="Are you sure you want to erase all data. \n This will erase all data \n and reset the program.")
+    resetWindowLabel.place(x=25,y=40)
+    eraseButton=tk.Button(resetWindow, text="Erase", command=deleteAllData)
+    eraseButton.place(x=120, y=110)
+    returnButton=tk.Button(resetWindow, text="Return", command=destroyResetWindow)
+    returnButton.place(x=120, y=150)
+    resetWindow.mainloop()
 
 #initial code starts here
 #loginScreen
@@ -223,7 +260,7 @@ try:
     reader = open(os.path.join(working_path,"masterPassword.key"), 'rb')
     masterPasswordEncrypted=reader.read()
     reader.close()
-    if masterPasswordEncrypted != '':
+    if masterPasswordEncrypted != b'':
         loginWindow=tk.Tk()
         loginWindow.title("Login")
         loginWindow.geometry("310x200")
@@ -234,11 +271,37 @@ try:
         askPasswordInput=tk.Entry(loginWindow, width=10, textvariable=passwordVar)
         askPasswordButton=tk.Button(loginWindow, text="Login", command=checkLogin)
         loginWindowOutput=tk.Text(loginWindow, height=2, width=15)
+        resetButton=tk.Button(loginWindow, text="Reset", command=reset)
         askPasswordLabel.place(x=10,y=80)
         askPasswordInput.place(x=120, y=80)
         askPasswordButton.place(x=230, y=80)
         loginWindowOutput.place(x=100,y=120)
+        resetButton.place(x=120,y=160)
         loginWindow.mainloop()
+    else:
+        setupWindow=tk.Tk()
+        setupWindow.title("Setup Master Password")
+        setupWindow.geometry("310x200")
+        setupWindow.resizable(False, False)
+        setupWindow.eval('tk::PlaceWindow . center')
+        setupPasswordVar=tk.StringVar()
+        setupPasswordLabel=tk.Label(setupWindow, text="Create your master password. \n This can not be recovered if forgotten.")
+        setupPasswordInput=tk.Entry(setupWindow, width=10, textvariable=setupPasswordVar)
+        setupPasswordButton=tk.Button(setupWindow, text="Enter", command=destroySetupWindow)
+        setupPasswordLabel.place(x=35, y=55)
+        setupPasswordInput.place(x=105,y=100)
+        setupPasswordButton.place(x=120, y=150)
+        setupWindow.mainloop()
+        with open(os.path.join(working_path,"masterPassword.key"), 'wb') as file:
+            #encrypt and write masterpassword to txt file
+            unencryptedMasterPassword=setupPasswordVar.get()
+            unencryptedMasterPasswordBytes=unencryptedMasterPassword.encode("utf-8")
+            key=base64.urlsafe_b64encode(unencryptedMasterPasswordBytes.ljust(32)[:32])
+            with open(os.path.join(working_path,"masterPasswordKey.key"), 'wb') as fileTwo:
+                fileTwo.write(key)
+            fernet=Fernet(key)
+            encryptedMasterPassword=fernet.encrypt(unencryptedMasterPassword.encode())
+            file.write(encryptedMasterPassword)
  
 except:
     setupWindow=tk.Tk()
@@ -327,6 +390,3 @@ window.update()
 #starts main GUI and initializaiton 
 initialization()
 window.mainloop()
-
-#remove help section and change to reset section in login screen
-#resize main window to perfectly fit buttons
