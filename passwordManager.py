@@ -6,9 +6,8 @@ from cryptography.fernet import Fernet
 import base64
 import os
 
-#global variables
+#temporary passwords list
 passwords=[["!!!Username", "Note", "Password"]]
-masterPassword=''
 
 #create directories for data
 absolute_path = os.path.dirname(__file__)
@@ -220,27 +219,26 @@ def getHelp():
     helpWindow.mainloop()
     return
 
-#overwrites all files to blank
-def deleteAllData():
-    try:
-        with open(os.path.join(working_path,"data.csv"), 'wb') as dataFile:
-            dataFile.write(b'')
-        with open(os.path.join(working_path,"dataKey.key"), 'wb') as dataKeyFile:
-            dataKeyFile.write(b'')
-        with open(os.path.join(working_path,"masterPasswordKey.key"), 'wb') as masterPasswordKeyFile:
-            masterPasswordKeyFile.write(b'')
-        with open(os.path.join(working_path,"masterPassword.key"), 'wb') as masterPasswordFile:
-            masterPasswordFile.write(b'')
-        loginWindow.destroy()
-        os._exit
-        quit()
-    except:
-        pass
-
 #reset password
 def reset():
     def destroyResetWindow():
         resetWindow.destroy()
+    #overwrites all files to blank
+    def deleteAllData():
+        destroyResetWindow()
+        try:
+            with open(os.path.join(working_path,"data.csv"), 'wb') as dataFile:
+                dataFile.write(b'')
+            with open(os.path.join(working_path,"dataKey.key"), 'wb') as dataKeyFile:
+                dataKeyFile.write(b'')
+            with open(os.path.join(working_path,"masterPasswordKey.key"), 'wb') as masterPasswordKeyFile:
+                masterPasswordKeyFile.write(b'')
+            with open(os.path.join(working_path,"masterPassword.key"), 'wb') as masterPasswordFile:
+                masterPasswordFile.write(b'')
+            loginWindow.destroy()
+            window.destroy()
+        except:
+            pass
     resetWindow=tk.Tk()
     resetWindow.title("Reset")
     resetWindow.geometry("310x200")
@@ -389,4 +387,11 @@ window.update()
 
 #starts main GUI and initializaiton 
 initialization()
-window.mainloop()
+try:
+    reader = open(os.path.join(working_path,"masterPassword.key"), 'rb')
+    masterPasswordEncrypted=reader.read()
+    reader.close()
+    if masterPasswordEncrypted != b'':
+        window.mainloop()
+except:
+    pass
