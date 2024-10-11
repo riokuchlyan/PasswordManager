@@ -8,7 +8,7 @@ import os
 
 #temporary passwords list
 passwords=[["!!!Username", "Note", "Password"]]
-masterPassword=''
+loggedIn=False
 
 #create directories for data
 absolute_path = os.path.dirname(__file__)
@@ -216,10 +216,11 @@ def checkLogin():
     if passwordVar.get() != decryptedMasterPassword:
         loginWindowOutput.delete(1.0,tk.END)
         loginWindowOutput.insert(tk.END, "Wrong Password")
-    #not accessing global masterPassword on line 11
-    masterPassword=passwordVar.get()
-    loginWindow.destroy()
-    return
+    if passwordVar.get() == decryptedMasterPassword:
+        global loggedIn
+        loggedIn=True
+        loginWindow.destroy()
+    return decryptedMasterPassword
 
 #destroy setup window 
 def destroySetupWindow():
@@ -284,7 +285,13 @@ try:
     reader = open(os.path.join(working_path,"masterPassword.key"), 'rb')
     masterPasswordEncrypted=reader.read()
     reader.close()
-    if masterPasswordEncrypted != b'':
+    with open(os.path.join(working_path,"masterPasswordKey.key"), 'rb') as masterPasswordKey:
+        #get key for decryption
+        key=masterPasswordKey.read()
+        fernet=Fernet(key)
+        decryptedMasterPassword=fernet.decrypt(masterPasswordEncrypted).decode()
+        masterPasswordKey.close()
+    if len(decryptedMasterPassword)>0:
         loginWindow=tk.Tk()
         loginWindow.title("Login")
         loginWindow.geometry("310x200")
@@ -328,6 +335,8 @@ try:
             encryptedMasterPassword=fernet.encrypt(unencryptedMasterPassword.encode())
             file.write(encryptedMasterPassword)       
             file.close()
+        if len(setupPasswordVar.get())>0:
+            loggedIn=True
  
 except:
     setupWindow=tk.Tk()
@@ -355,6 +364,8 @@ except:
         encryptedMasterPassword=fernet.encrypt(unencryptedMasterPassword.encode())
         file.write(encryptedMasterPassword)
         file.close()
+    if len(setupPasswordVar.get())>0:
+        loggedIn=True
         
 
 #mainGUI
@@ -414,7 +425,6 @@ deleteItemInput.place(x=205, y=550)
 deleteItemButton.place(x=265, y=550)
 helpButton.place(x=370, y=550)
 exportButton.place(x=460, y=550)
-window.update()
 
 #starts main GUI and initializaiton 
 initialization()
@@ -422,10 +432,7 @@ try:
     reader = open(os.path.join(working_path,"masterPassword.key"), 'rb')
     masterPasswordEncrypted=reader.read()
     reader.close()
-    if masterPassword != '':
+    if loggedIn:
         window.mainloop()
 except:
     pass
-
-#bug where if you exit setup window it thinks the password is '' fix bug by addressing problem on line 219
-#https://medium.com/@jackhuang.wz/in-just-two-steps-you-can-turn-a-python-script-into-a-macos-application-installer-6e21bce2ee71
