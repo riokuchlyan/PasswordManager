@@ -397,3 +397,4 @@ except:
     pass
 
 #bug where if you exit setup window it thinks the password is ''
+#https://medium.com/@jackhuang.wz/in-just-two-steps-you-can-turn-a-python-script-into-a-macos-application-installer-6e21bce2ee71
