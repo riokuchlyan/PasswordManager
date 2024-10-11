@@ -395,3 +395,5 @@ try:
         window.mainloop()
 except:
     pass
+
+#bug where if you exit setup window it thinks the password is ''
