@@ -22,24 +22,23 @@ except:
 #read csv file and show in window and sync passwords list
 def initialization():
     textOutput.delete(1.0,tk.END)
+    
     try:
         with open(os.path.join(working_path,"dataKey.key"), 'rb') as dataKey:
             key = dataKey.read()
-            dataKey.close()
+            
         #initalize key
         fernet=Fernet(key)
         #open encrypted file
         with open(os.path.join(working_path,"data.csv"), 'rb') as encryptedFile:
-            encryptedData=encryptedFile.read()
-            encryptedFile.close()
+            encryptedData=encryptedFile.read()   
         #decrypt data
-        decryptedData=fernet.decrypt(encryptedData)
+        decryptedData=fernet.decrypt(encryptedData) #this line should decrypt data but it freezes program and encryption doesn't work
         #writing unencrypted data
         with open(os.path.join(working_path,"data.csv"), 'wb') as encryptedFileTwo:
-            encryptedFileTwo.write(decryptedData)
-            encryptedFileTwo.close()
+            encryptedFileTwo.write(decryptedData) #should be decryptedData
         #output decrypted passwords to GUI
-        with  open(os.path.join(working_path,"data.csv"), newline='') as decryptedFile:
+        with open(os.path.join(working_path,"data.csv"), newline='') as decryptedFile:
             reader=csv.reader(decryptedFile, delimiter=' ', quotechar='|')
             counter=1
             for row in reader:
@@ -50,24 +49,20 @@ def initialization():
                     labeledPasswordEntry=str(counter) + ") " + "Username: " + rowList[0] + " | " + "Note: " + rowList[1] + " | " + "Password: " + rowList[2]
                     textOutput.insert(tk.END, labeledPasswordEntry)
                     textOutput.insert(tk.END, "\n")
-                    counter=counter+1
-                    decryptedFile.close()
+                    counter=counter+1            
         #encrypt data again
         with open(os.path.join(working_path,"dataKey.key"), 'rb') as dataKeyTwo:
-            key = dataKeyTwo.read()
-            dataKeyTwo.close()
+            key = dataKeyTwo.read()   
         #initalize key
         fernet=Fernet(key)
         #open unencrypted file
         with open(os.path.join(working_path,"data.csv"), 'rb') as unencryptedFile:
-            unencryptedData=unencryptedFile.read()
-            unencryptedFile.close()
+            unencryptedData=unencryptedFile.read()  
         #encrypted data
         encryptedData=fernet.encrypt(unencryptedData)
         #writing encrypted data
         with open(os.path.join(working_path,"data.csv"), 'wb') as unencryptedFileTwo:
-            unencryptedFileTwo.write(encryptedData)
-            unencryptedFileTwo.close()
+            unencryptedFileTwo.write(encryptedData) 
         return
     except:
         return
