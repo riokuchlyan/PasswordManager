@@ -1,0 +1,93 @@
+('/Users/riokuchlyan/Library/Mobile '
+ 'Documents/com~apple~CloudDocs/Files/Projects/Software '
+ 'Development/passwordManager/build/Password Manager/Password Manager',
+ False,
+ False,
+ True,
+ ['/Users/riokuchlyan/Library/Mobile '
+  'Documents/com~apple~CloudDocs/Files/Projects/Software '
+  'Development/passwordManager/icon.icns'],
+ None,
+ False,
+ False,
+ None,
+ True,
+ False,
+ 'arm64',
+ None,
+ None,
+ '/Users/riokuchlyan/Library/Mobile '
+ 'Documents/com~apple~CloudDocs/Files/Projects/Software '
+ 'Development/passwordManager/build/Password Manager/Password Manager.pkg',
+ [('pyi-contents-directory _internal', '', 'OPTION'),
+  ('PYZ-00.pyz',
+   '/Users/riokuchlyan/Library/Mobile '
+   'Documents/com~apple~CloudDocs/Files/Projects/Software '
+   'Development/passwordManager/build/Password Manager/PYZ-00.pyz',
+   'PYZ'),
+  ('lib-dynload/_struct.cpython-312-darwin.so',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/lib-dynload/_struct.cpython-312-darwin.so',
+   'EXTENSION'),
+  ('lib-dynload/zlib.cpython-312-darwin.so',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/lib-dynload/zlib.cpython-312-darwin.so',
+   'EXTENSION'),
+  ('struct',
+   '/Users/riokuchlyan/Library/Mobile '
+   'Documents/com~apple~CloudDocs/Files/Projects/Software '
+   'Development/passwordManager/build/Password Manager/localpycs/struct.pyc',
+   'PYMODULE'),
+  ('pyimod01_archive',
+   '/Users/riokuchlyan/Library/Mobile '
+   'Documents/com~apple~CloudDocs/Files/Projects/Software '
+   'Development/passwordManager/build/Password '
+   'Manager/localpycs/pyimod01_archive.pyc',
+   'PYMODULE'),
+  ('pyimod02_importers',
+   '/Users/riokuchlyan/Library/Mobile '
+   'Documents/com~apple~CloudDocs/Files/Projects/Software '
+   'Development/passwordManager/build/Password '
+   'Manager/localpycs/pyimod02_importers.pyc',
+   'PYMODULE'),
+  ('pyimod03_ctypes',
+   '/Users/riokuchlyan/Library/Mobile '
+   'Documents/com~apple~CloudDocs/Files/Projects/Software '
+   'Development/passwordManager/build/Password '
+   'Manager/localpycs/pyimod03_ctypes.pyc',
+   'PYMODULE'),
+  ('pyiboot01_bootstrap',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/loader/pyiboot01_bootstrap.py',
+   'PYSOURCE'),
+  ('pyi_rth_inspect',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/hooks/rthooks/pyi_rth_inspect.py',
+   'PYSOURCE'),
+  ('pyi_rth_cryptography_openssl',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/_pyinstaller_hooks_contrib/rthooks/pyi_rth_cryptography_openssl.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgres',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/hooks/rthooks/pyi_rth_pkgres.py',
+   'PYSOURCE'),
+  ('pyi_rth_setuptools',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/hooks/rthooks/pyi_rth_setuptools.py',
+   'PYSOURCE'),
+  ('pyi_rth_multiprocessing',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/hooks/rthooks/pyi_rth_multiprocessing.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgutil',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/hooks/rthooks/pyi_rth_pkgutil.py',
+   'PYSOURCE'),
+  ('pyi_rth__tkinter',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/hooks/rthooks/pyi_rth__tkinter.py',
+   'PYSOURCE'),
+  ('passwordManager',
+   '/Users/riokuchlyan/Library/Mobile '
+   'Documents/com~apple~CloudDocs/Files/Projects/Software '
+   'Development/passwordManager/passwordManager.py',
+   'PYSOURCE')],
+ [],
+ False,
+ False,
+ 1731517850,
+ [('runw',
+   '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/PyInstaller/bootloader/Darwin-64bit/runw',
+   'EXECUTABLE')],
+ '/Library/Frameworks/Python.framework/Versions/3.12/Python')
