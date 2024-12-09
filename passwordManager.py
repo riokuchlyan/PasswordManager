@@ -1,4 +1,3 @@
-import tkinter as tk
 import customtkinter as CTk
 import random
 import string
