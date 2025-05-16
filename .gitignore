@@ -1,3 +1,4 @@
 __pycache__/
 config.py
+/password_manager_data
 .DS_Store
